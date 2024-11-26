@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-Vindo ao Natal Ecotec</title>
+    <!-- Link para fontes mais bonitas -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Sacramento&family=Playfair+Display&family=Cookie&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <!-- Efeitos de flocos de neve -->
+    <div class="snowflakes">
+        <div class="snowflake" style="left: 10%; animation-duration: 8s;">❄️</div>
+        <div class="snowflake" style="left: 20%; animation-duration: 12s;">❄️</div>
+        <div class="snowflake" style="left: 40%; animation-duration: 15s;">❄️</div>
+        <div class="snowflake" style="left: 60%; animation-duration: 10s;">❄️</div>
+        <div class="snowflake" style="left: 80%; animation-duration: 20s;">❄️</div>
+        <div class="snowflake" style="left: 90%; animation-duration: 14s;">❄️</div>
+    </div>
+
+    <!-- Conteúdo central -->
+    <div class="content" id="initial-content">
+        <h1>🎄 BEM VINDO(A) 🎄</h1>
+        <h2>AO NATAL ECOTEC DO SENAI</h2>
+        <button class="button" onclick="start()">Aperte aqui para começar</button>
+    </div>
+
+    <!-- Jogo de Natal -->
+    <div class="game-container" id="game-container">
+        <h2>Organize os Presentes!</h2>
+        <!-- Zonas de drop -->
+        <div class="drop-zone-container">
+            <div class="drop-zone" id="zone-green" data-color="green" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="drop-zone" id="zone-red" data-color="red" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="drop-zone" id="zone-yellow" data-color="yellow" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+            <div class="drop-zone" id="zone-blue" data-color="blue" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+        </div>
+
+        <!-- Presentes -->
+        <div class="presents">
+            <img src="https://png.pngtree.com/png-vector/20231020/ourmid/pngtree-green-gift-box-png-image_10237206.png" class="present green" id="present-green" data-color="green" draggable="true" ondragstart="drag(event)">
+            <img src="https://png.pngtree.com/png-vector/20240205/ourlarge/pngtree-red-gift-box-present-png-image_11615108.png" class="present red" id="present-red" data-color="red" draggable="true" ondragstart="drag(event)">
+            <img src="https://png.pngtree.com/png-vector/20240205/ourlarge/pngtree-yellow-gift-box-present-png-image_11543425.png" class="present yellow" id="present-yellow" data-color="yellow" draggable="true" ondragstart="drag(event)">
+            <img src="https://png.pngtree.com/png-vector/20230831/ourlarge/pngtree-a-dark-blue-gift-box-decorated-by-blue-ribbons-in-the-png-image_9192771.png" class="present blue" id="present-blue" data-color="blue" draggable="true" ondragstart="drag(event)">
+        </div>
+
+        <div class="victory-message" id="victory-message">
+            Tenha um Feliz Natal!
+        </div>
+    </div>
+
+    <script>
+        function start() {
+            // Esconde o conteúdo inicial e mostra o jogo
+            document.getElementById('initial-content').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+        }
+
+        // Função para permitir o arraste dos presentes
+        function drag(event) {
+            event.dataTransfer.setData("id", event.target.id);
+        }
+
+        // Funções para permitir o drop dos presentes nas zonas certas
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            var data = event.dataTransfer.getData("id");
+            var droppedPresent = document.getElementById(data);
+            var zone = event.target;
+            
+            if (zone.dataset.color === droppedPresent.classList[1]) {
+                zone.classList.add('correct');
+                zone.innerHTML = ''; // Limpa a zona antes de colocar o presente
+                zone.appendChild(droppedPresent);
+                droppedPresent.style.position = "absolute"; // Mantém o presente dentro da zona
+                acertou(zone.dataset.color)
+                checkVictory();
+            } else {
+                zone.classList.add('error');
+                setTimeout(() => zone.classList.remove('error'), 500);
+            }
+        }
+
+        // Verifica se o jogador completou o jogo
+        function checkVictory() {
+            var allCorrect = document.querySelectorAll('.drop-zone.correct').length === 4;
+            if (allCorrect) {
+                document.getElementById('victory-message').style.display = 'block';
+                acertou("estrela")
+            }
+        }
+    </script>
+</body>
+<script src="mqttws31.js"></script>
+<script src="index.js"></script>
+</html>
