@@ -4,34 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bem-Vindo ao Natal Ecotec</title>
+    <!-- Link para fontes mais bonitas -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Sacramento&family=Playfair+Display&family=Cookie&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
-    <style>
-        /* Adicionando estilos simples para melhorar a experiência */
-        .present {
-            width: 100px;
-            height: 100px;
-            position: absolute;
-            cursor: pointer;
-        }
-        .drop-zone {
-            width: 120px;
-            height: 120px;
-            border: 2px dashed #bbb;
-            margin: 20px;
-            display: inline-block;
-            position: relative;
-        }
-        .correct {
-            background-color: lightgreen;
-        }
-        .error {
-            background-color: lightcoral;
-        }
-    </style>
 </head>
 <body>
-
     <!-- Efeitos de flocos de neve -->
     <div class="snowflakes">
         <div class="snowflake" style="left: 10%; animation-duration: 8s;">❄️</div>
@@ -42,7 +19,7 @@
         <div class="snowflake" style="left: 90%; animation-duration: 14s;">❄️</div>
     </div>
 
-    <!-- Conteúdo inicial -->
+    <!-- Conteúdo central -->
     <div class="content" id="initial-content">
         <h1>🎄 BEM VINDO(A) 🎄</h1>
         <h2>AO NATAL ECOTEC DO SENAI</h2>
@@ -52,6 +29,7 @@
     <!-- Jogo de Natal -->
     <div class="game-container" id="game-container" style="display: none;">
         <h2>Organize os Presentes!</h2>
+        <!-- Zonas de drop -->
         <div class="drop-zone-container">
             <div class="drop-zone" id="zone-green" data-color="green" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
             <div class="drop-zone" id="zone-red" data-color="red" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
@@ -210,6 +188,7 @@
             });
         });
     </script>
-
 </body>
+<script src="mqttws31.js"></script>
+<script src="index.js"></script>
 </html>
