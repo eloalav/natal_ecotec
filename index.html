@@ -27,7 +27,7 @@
     </div>
 
     <!-- Jogo de Natal -->
-    <div class="game-container" id="game-container">
+    <div class="game-container" id="game-container" style="display: none;">
         <h2>Organize os Presentes!</h2>
         <!-- Zonas de drop -->
         <div class="drop-zone-container">
@@ -45,7 +45,7 @@
             <img src="https://png.pngtree.com/png-vector/20230831/ourlarge/pngtree-a-dark-blue-gift-box-decorated-by-blue-ribbons-in-the-png-image_9192771.png" class="present blue" id="present-blue" data-color="blue" draggable="true" ondragstart="drag(event)">
         </div>
 
-        <div class="victory-message" id="victory-message">
+        <div class="victory-message" id="victory-message" style="display: none;">
             Tenha um Feliz Natal!
         </div>
     </div>
@@ -55,7 +55,23 @@
             // Esconde o conteúdo inicial e mostra o jogo
             document.getElementById('initial-content').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
-            acertou("apagar");
+            // Esconde a mensagem de vitória ao começar
+            document.getElementById('victory-message').style.display = 'none';
+            resetGame();
+        }
+
+        function resetGame() {
+            // Reseta as zonas e os presentes
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.innerHTML = '';
+                zone.classList.remove('correct');
+                zone.classList.remove('error');
+            });
+            document.querySelectorAll('.present').forEach(present => {
+                present.style.position = 'relative';
+                present.style.left = '';
+                present.style.top = '';
+            });
         }
 
         // Função para permitir o arraste dos presentes
@@ -73,13 +89,14 @@
             var data = event.dataTransfer.getData("id");
             var droppedPresent = document.getElementById(data);
             var zone = event.target;
-            
+
+            // Verifica se a zona de drop e o presente são da mesma cor
             if (zone.dataset.color === droppedPresent.classList[1]) {
-                zone.classList.add('correct');
-                zone.innerHTML = ''; // Limpa a zona antes de colocar o presente
                 zone.appendChild(droppedPresent);
                 droppedPresent.style.position = "absolute"; // Mantém o presente dentro da zona
-                acertou(zone.dataset.color)
+                droppedPresent.style.left = "0";
+                droppedPresent.style.top = "0";
+                zone.classList.add('correct');
                 checkVictory();
             } else {
                 zone.classList.add('error');
@@ -92,7 +109,6 @@
             var allCorrect = document.querySelectorAll('.drop-zone.correct').length === 4;
             if (allCorrect) {
                 document.getElementById('victory-message').style.display = 'block';
-                acertou("estrela")
             }
         }
 
@@ -143,7 +159,11 @@
 
                 if (targetZone) {
                     // Verifica se o presente foi solto na zona correta
-                    if (targetZone.classList.contains('correct')) {
+                    if (targetZone.dataset.color === draggedItem.classList[1]) {
+                        targetZone.appendChild(draggedItem);
+                        draggedItem.style.position = "absolute";
+                        draggedItem.style.left = "0";
+                        draggedItem.style.top = "0";
                         targetZone.classList.add('correct');
                     } else {
                         targetZone.classList.add('error');
