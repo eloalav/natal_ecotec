@@ -7,6 +7,97 @@
     <!-- Link para fontes mais bonitas -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Sacramento&family=Playfair+Display&family=Cookie&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
+    <style>
+        /* Estilos para a caixinha de presentes errados */
+        #caixinha {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            width: 320px;
+            height: 180px;
+            overflow-y: auto;
+            background-color: #f0f0f0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ff6f61;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        #caixinha h3 {
+            font-family: 'Sacramento', cursive;
+            font-size: 18px;
+            color: #ff6f61;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .presente-erro {
+            margin-bottom: 15px;
+            padding: 12px;
+            background-color: #ff9f80;
+            border-radius: 10px;
+            text-align: center;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            animation: bounceIn 0.5s ease;
+        }
+
+        .presente-erro img {
+            width: 30px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        /* Animação de entrada para os presentes errados */
+        @keyframes bounceIn {
+            0% { transform: translateY(-30px); opacity: 0; }
+            50% { transform: translateY(15px); opacity: 1; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        #caixinha:hover {
+            background-color: #ffefe6;
+            transform: scale(1.05);
+        }
+
+        /* Estilo dos botões e outros elementos */
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #ff6f61;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #ff4d3a;
+        }
+
+        /* Estilo das zonas de drop e presentes */
+        .drop-zone {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            margin: 10px;
+            display: inline-block;
+            position: relative;
+            background-color: #f8f8f8;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .present {
+            width: 60px;
+            height: 60px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        /* Outras personalizações podem ser feitas conforme necessário */
+    </style>
 </head>
 <body>
     <!-- Efeitos de flocos de neve -->
@@ -19,7 +110,7 @@
         <div class="snowflake" style="left: 90%; animation-duration: 14s;">❄️</div>
     </div>
 
-    <!-- Conteúdo central -->
+    <!-- Conteúdo inicial -->
     <div class="content" id="initial-content">
         <h1>🎄 BEM VINDO(A) 🎄</h1>
         <h2>AO NATAL ECOTEC DO SENAI</h2>
@@ -29,6 +120,7 @@
     <!-- Jogo de Natal -->
     <div class="game-container" id="game-container" style="display: none;">
         <h2>Organize os Presentes!</h2>
+
         <!-- Zonas de drop -->
         <div class="drop-zone-container">
             <div class="drop-zone" id="zone-green" data-color="green" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
@@ -45,17 +137,24 @@
             <img src="https://png.pngtree.com/png-vector/20230831/ourlarge/pngtree-a-dark-blue-gift-box-decorated-by-blue-ribbons-in-the-png-image_9192771.png" class="present blue" id="present-blue" data-color="blue" draggable="true" ondragstart="drag(event)">
         </div>
 
+        <!-- Mensagem de vitória -->
         <div class="victory-message" id="victory-message" style="display: none;">
             Tenha um Feliz Natal!
+        </div>
+
+        <!-- Caixinha de presentes errados -->
+        <div id="caixinha">
+            <h3>Presentes Errados:</h3>
         </div>
     </div>
 
     <script>
+        let currentAttempt = 0; // Contador de tentativas
+
         function start() {
             // Esconde o conteúdo inicial e mostra o jogo
             document.getElementById('initial-content').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
-            // Esconde a mensagem de vitória ao começar
             document.getElementById('victory-message').style.display = 'none';
             resetGame();
         }
@@ -101,7 +200,26 @@
             } else {
                 zone.classList.add('error');
                 setTimeout(() => zone.classList.remove('error'), 500);
+
+                // Adiciona o presente errado na caixinha
+                addIncorrectPresent(droppedPresent);
+                currentAttempt++;
+
+                // Se o número de tentativas for 3, o jogador perde
+                if (currentAttempt >= 3) {
+                    alert("Você perdeu! Tente novamente.");
+                    resetGame();
+                    currentAttempt = 0;
+                }
             }
+        }
+
+        function addIncorrectPresent(present) {
+            const caixinha = document.getElementById('caixinha');
+            const presenteErro = document.createElement('div');
+            presenteErro.classList.add('presente-erro');
+            presenteErro.innerHTML = `<img src="${present.src}" alt="Presente Errado"> Presente errado!`;
+            caixinha.appendChild(presenteErro);
         }
 
         // Verifica se o jogador completou o jogo
@@ -170,13 +288,11 @@
                     }
                 }
 
-                // Restaura o estilo do item arrastado
                 draggedItem.style.position = "relative";
                 draggedItem.style.zIndex = "";
                 draggedItem = null;
             }
 
-            // Adiciona os eventos de toque e de mouse aos presentes
             presents.forEach(present => {
                 present.addEventListener("touchstart", startDrag, false);
                 present.addEventListener("touchmove", dragMove, false);

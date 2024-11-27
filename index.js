@@ -121,12 +121,15 @@ function acertou(cor) {
 }
 
 // Função chamada quando o jogador errar
-function errou() {
+function errou(cor) {
     currentAttempt += 1;
+
+    // Adiciona o presente errado na caixinha
+    adicionarPresenteNaCaixinha(cor);
 
     // Verifica se o jogador ainda tem tentativas
     if (currentAttempt >= maxAttempts) {
-        alert("Você perdeu! O presente desapareceu!");
+        alert("Você perdeu! O jogo terminou!");
         // Lógica para esconder o presente (por exemplo, removendo-o da tela)
         esconderPresente();
     } else {
@@ -134,6 +137,19 @@ function errou() {
         mostrarPresente(); // Garantir que o presente continue visível
         atualizarTentativas();
     }
+}
+
+// Função para adicionar o presente na caixinha
+function adicionarPresenteNaCaixinha(cor) {
+    const caixinha = document.getElementById("caixinha");
+    const presenteErrado = document.createElement("div");
+    presenteErrado.classList.add("presente");
+    presenteErrado.textContent = `Presente de cor ${cor} errado!`;
+    
+    // Aqui você pode customizar o estilo, como adicionar uma imagem ou cor ao "presente"
+    presenteErrado.style.backgroundColor = cor; // Pode usar uma cor, imagem, etc.
+
+    caixinha.appendChild(presenteErrado);
 }
 
 // Função para atualizar o número de tentativas restantes
@@ -151,4 +167,3 @@ function mostrarPresente() {
 function esconderPresente() {
     document.getElementById("presente").style.visibility = "hidden";
 }
-
