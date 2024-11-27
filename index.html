@@ -20,6 +20,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             border: 2px solid #ff6f61;
             transition: background-color 0.3s ease, transform 0.2s ease;
+            display: none; /* Ocultar por padrão */
         }
 
         #caixinha h3 {
@@ -61,6 +62,13 @@
             transform: scale(1.05);
         }
 
+        /* Media Query para dispositivos móveis (máximo de 768px de largura) */
+        @media (max-width: 768px) {
+            #caixinha {
+                display: block; /* Exibe a caixinha apenas em telas menores (celulares) */
+            }
+        }
+
         /* Estilo dos botões e outros elementos */
         .button {
             padding: 10px 20px;
@@ -95,8 +103,6 @@
             margin: 5px;
             cursor: pointer;
         }
-
-        /* Outras personalizações podem ser feitas conforme necessário */
     </style>
 </head>
 <body>
@@ -168,31 +174,30 @@
             });
             document.querySelectorAll('.present').forEach(present => {
                 present.style.position = 'relative';
-                present.style.left = '';
-                present.style.top = '';
+                present.style.left = '0';
+                present.style.top = '0';
             });
+            currentAttempt = 0;
         }
 
-        // Função para permitir o arraste dos presentes
-        function drag(event) {
-            event.dataTransfer.setData("id", event.target.id);
-        }
-
-        // Funções para permitir o drop dos presentes nas zonas certas
+        // Função de arrastar e soltar
         function allowDrop(event) {
             event.preventDefault();
         }
 
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
         function drop(event) {
             event.preventDefault();
-            var data = event.dataTransfer.getData("id");
-            var droppedPresent = document.getElementById(data);
-            var zone = event.target;
+            const data = event.dataTransfer.getData("text");
+            const droppedPresent = document.getElementById(data);
+            const zone = event.target;
 
-            // Verifica se a zona de drop e o presente são da mesma cor
             if (zone.dataset.color === droppedPresent.classList[1]) {
                 zone.appendChild(droppedPresent);
-                droppedPresent.style.position = "absolute"; // Mantém o presente dentro da zona
+                droppedPresent.style.position = "absolute";
                 droppedPresent.style.left = "0";
                 droppedPresent.style.top = "0";
                 zone.classList.add('correct');
@@ -201,11 +206,9 @@
                 zone.classList.add('error');
                 setTimeout(() => zone.classList.remove('error'), 500);
 
-                // Adiciona o presente errado na caixinha
                 addIncorrectPresent(droppedPresent);
                 currentAttempt++;
 
-                // Se o número de tentativas for 3, o jogador perde
                 if (currentAttempt >= 3) {
                     alert("Você perdeu! Tente novamente.");
                     resetGame();
@@ -222,89 +225,12 @@
             caixinha.appendChild(presenteErro);
         }
 
-        // Verifica se o jogador completou o jogo
         function checkVictory() {
             var allCorrect = document.querySelectorAll('.drop-zone.correct').length === 4;
             if (allCorrect) {
                 document.getElementById('victory-message').style.display = 'block';
             }
         }
-
-        // Código de arrastar para dispositivos móveis
-        document.addEventListener("DOMContentLoaded", function() {
-            let draggedItem = null;
-
-            // Selecionar os elementos do presente e da zona de drop
-            const presents = document.querySelectorAll('.present');
-            const dropZones = document.querySelectorAll('.drop-zone');
-
-            // Função para manipular o evento de toque em dispositivos móveis
-            function startDrag(e) {
-                e.preventDefault();  // Previne o comportamento padrão
-                const touch = e.touches[0];
-                draggedItem = e.target;
-                draggedItem.style.position = "absolute";
-                draggedItem.style.zIndex = 1000; // Coloca o item sobre os outros
-                updateDraggedItemPosition(touch.clientX, touch.clientY);
-            }
-
-            // Função para mover o presente enquanto é arrastado
-            function dragMove(e) {
-                if (!draggedItem) return;
-                const touch = e.touches[0];
-                updateDraggedItemPosition(touch.clientX, touch.clientY);
-            }
-
-            // Função para atualizar a posição do presente
-            function updateDraggedItemPosition(x, y) {
-                draggedItem.style.left = x - draggedItem.offsetWidth / 2 + "px";
-                draggedItem.style.top = y - draggedItem.offsetHeight / 2 + "px";
-            }
-
-            // Função para soltar o item
-            function dropItem(e) {
-                e.preventDefault();
-                if (!draggedItem) return;
-                const touch = e.changedTouches[0];
-                let targetZone = null;
-                dropZones.forEach(zone => {
-                    const rect = zone.getBoundingClientRect();
-                    if (touch.clientX > rect.left && touch.clientX < rect.right &&
-                        touch.clientY > rect.top && touch.clientY < rect.bottom) {
-                        targetZone = zone;
-                    }
-                });
-
-                if (targetZone) {
-                    // Verifica se o presente foi solto na zona correta
-                    if (targetZone.dataset.color === draggedItem.classList[1]) {
-                        targetZone.appendChild(draggedItem);
-                        draggedItem.style.position = "absolute";
-                        draggedItem.style.left = "0";
-                        draggedItem.style.top = "0";
-                        targetZone.classList.add('correct');
-                    } else {
-                        targetZone.classList.add('error');
-                    }
-                }
-
-                draggedItem.style.position = "relative";
-                draggedItem.style.zIndex = "";
-                draggedItem = null;
-            }
-
-            presents.forEach(present => {
-                present.addEventListener("touchstart", startDrag, false);
-                present.addEventListener("touchmove", dragMove, false);
-                present.addEventListener("touchend", dropItem, false);
-
-                present.addEventListener("mousedown", startDrag, false);
-                present.addEventListener("mousemove", dragMove, false);
-                present.addEventListener("mouseup", dropItem, false);
-            });
-        });
     </script>
 </body>
-<script src="mqttws31.js"></script>
-<script src="index.js"></script>
 </html>
