@@ -1,3 +1,4 @@
+/* Estilos gerais */
 body {
     margin: 0;
     padding: 0;
@@ -195,4 +196,78 @@ h2 {
     font-weight: bold;
     text-align: center;
     letter-spacing: 1px;
+}
+
+/* Media Queries - Responsividade */
+@media (max-width: 768px) {
+    /* Ajusta a altura do corpo para permitir rolagem em telas pequenas */
+    body {
+        height: auto;
+        padding: 20px;
+    }
+
+    /* Títulos menores em telas pequenas */
+    h1 {
+        font-size: 2.5em;
+    }
+
+    h2 {
+        font-size: 2em;
+    }
+
+    .button {
+        padding: 15px 30px;
+        font-size: 1.2em;
+    }
+
+    /* Ajusta as zonas de drop para ocupar mais espaço */
+    .drop-zone-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .drop-zone {
+        width: 80%;
+        height: 80px;
+        margin: 10px auto;
+    }
+
+    /* Ajusta o tamanho dos presentes */
+    .present {
+        width: 60px;
+        height: 60px;
+    }
+
+    /* Adapta a mensagem de vitória */
+    .victory-message {
+        font-size: 18px;
+        padding: 12px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Ajusta o título e subtítulo para telas menores */
+    h1 {
+        font-size: 2em;
+    }
+
+    h2 {
+        font-size: 1.5em;
+    }
+
+    /* Botão com tamanho reduzido */
+    .button {
+        font-size: 1.1em;
+    }
+
+    /* Ajuste final para os presentes e drop-zones */
+    .present {
+        width: 50px;
+        height: 50px;
+    }
+
+    .drop-zone {
+        width: 70%;
+        height: 70px;
+    }
 }

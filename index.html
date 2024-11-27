@@ -55,6 +55,7 @@
             // Esconde o conteúdo inicial e mostra o jogo
             document.getElementById('initial-content').style.display = 'none';
             document.getElementById('game-container').style.display = 'block';
+            acertou("apagar");
         }
 
         // Função para permitir o arraste dos presentes
@@ -94,6 +95,78 @@
                 acertou("estrela")
             }
         }
+
+        // Código de arrastar para dispositivos móveis
+        document.addEventListener("DOMContentLoaded", function() {
+            let draggedItem = null;
+
+            // Selecionar os elementos do presente e da zona de drop
+            const presents = document.querySelectorAll('.present');
+            const dropZones = document.querySelectorAll('.drop-zone');
+
+            // Função para manipular o evento de toque em dispositivos móveis
+            function startDrag(e) {
+                e.preventDefault();  // Previne o comportamento padrão
+                const touch = e.touches[0];
+                draggedItem = e.target;
+                draggedItem.style.position = "absolute";
+                draggedItem.style.zIndex = 1000; // Coloca o item sobre os outros
+                updateDraggedItemPosition(touch.clientX, touch.clientY);
+            }
+
+            // Função para mover o presente enquanto é arrastado
+            function dragMove(e) {
+                if (!draggedItem) return;
+                const touch = e.touches[0];
+                updateDraggedItemPosition(touch.clientX, touch.clientY);
+            }
+
+            // Função para atualizar a posição do presente
+            function updateDraggedItemPosition(x, y) {
+                draggedItem.style.left = x - draggedItem.offsetWidth / 2 + "px";
+                draggedItem.style.top = y - draggedItem.offsetHeight / 2 + "px";
+            }
+
+            // Função para soltar o item
+            function dropItem(e) {
+                e.preventDefault();
+                if (!draggedItem) return;
+                const touch = e.changedTouches[0];
+                let targetZone = null;
+                dropZones.forEach(zone => {
+                    const rect = zone.getBoundingClientRect();
+                    if (touch.clientX > rect.left && touch.clientX < rect.right &&
+                        touch.clientY > rect.top && touch.clientY < rect.bottom) {
+                        targetZone = zone;
+                    }
+                });
+
+                if (targetZone) {
+                    // Verifica se o presente foi solto na zona correta
+                    if (targetZone.classList.contains('correct')) {
+                        targetZone.classList.add('correct');
+                    } else {
+                        targetZone.classList.add('error');
+                    }
+                }
+
+                // Restaura o estilo do item arrastado
+                draggedItem.style.position = "relative";
+                draggedItem.style.zIndex = "";
+                draggedItem = null;
+            }
+
+            // Adiciona os eventos de toque e de mouse aos presentes
+            presents.forEach(present => {
+                present.addEventListener("touchstart", startDrag, false);
+                present.addEventListener("touchmove", dragMove, false);
+                present.addEventListener("touchend", dropItem, false);
+
+                present.addEventListener("mousedown", startDrag, false);
+                present.addEventListener("mousemove", dragMove, false);
+                present.addEventListener("mouseup", dropItem, false);
+            });
+        });
     </script>
 </body>
 <script src="mqttws31.js"></script>

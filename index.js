@@ -97,6 +97,8 @@ function acertou(cor) {
         message.destinationName = `natalecotec/ligar/faixa/yellow`;
     } else if ( cor === "estrela"){
         message.destinationName = `natalecotec/ligar/faixa/estrela`;
+    } else if ( cor === "apagar"){
+        message.destinationName = `natalecotec/ligar/faixa/apagar`;
     }
     
     // Publica a mensagem
